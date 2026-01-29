@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="transaccion", schema="default")
+@Table(name="transaccion", schema="public")
 public class Transaccion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaccion_generator")

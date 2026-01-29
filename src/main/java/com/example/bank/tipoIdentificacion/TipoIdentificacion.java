@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="tipo_identificacion", schema="default")
+@Table(name="tipo_identificacion", schema="public")
 public class TipoIdentificacion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipo_identificacion_generator")

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="estado", schema="default")
+@Table(name="estado", schema="public")
 public class Estado {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "estado_generator")

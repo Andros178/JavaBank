@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="cuenta", schema="default")
+@Table(name="cuenta", schema="public")
 public class Cuenta {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cuenta_generator")
