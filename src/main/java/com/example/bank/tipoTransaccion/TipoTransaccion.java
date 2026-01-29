@@ -28,6 +28,6 @@ public class TipoTransaccion {
     @Column(name = "tit_nombre", nullable = false, length = 100, unique = true)
     private String nombre;
 
-    @Column(name = "tit_desscripcion", nullable = false, length = 100)
+    @Column(name = "tit_descripcion", nullable = false, length = 100)
     private String descripcion;
 }
