@@ -1,7 +1,5 @@
 package com.example.bank.tipoIdentificacion.services;
 
-import com.example.bank.estado.Estado;
-import com.example.bank.estado.services.EstadoService;
 import com.example.bank.tipoIdentificacion.TipoIdentificacion;
 import com.example.bank.tipoIdentificacion.dtos.TipoIdentificacionCreateDTO;
 import com.example.bank.tipoIdentificacion.repositories.TipoIdentificacionRepository;
@@ -16,24 +14,17 @@ import java.util.List;
 public class TipoIdentificacionService {
 
     private final TipoIdentificacionRepository tipoIdentificacionRepository;
-    private final EstadoService estadoService;
-
-    private static final String ESTADO_DEFAULT = "Activo";
 
     @Transactional
     public TipoIdentificacion createTipoIdentificacion(TipoIdentificacionCreateDTO dto) {
-        // Validar que no exista otro tipo de identificación con el mismo nombre
+   
         if (tipoIdentificacionRepository.existsByNombre(dto.getNombre())) {
             throw new IllegalArgumentException("Ya existe un tipo de identificación con este nombre");
         }
 
-        // Obtener el estado por defecto "Activo"
-        Estado estado = estadoService.getEstadoByNombre(ESTADO_DEFAULT);
-
         TipoIdentificacion tipoIdentificacion = TipoIdentificacion.builder()
                 .nombre(dto.getNombre())
                 .descripcion(dto.getDescripcion())
-                .estado(estado)
                 .build();
 
         return tipoIdentificacionRepository.save(tipoIdentificacion);
@@ -54,7 +45,6 @@ public class TipoIdentificacionService {
     public TipoIdentificacion updateTipoIdentificacion(Long id, TipoIdentificacionCreateDTO dto) {
         TipoIdentificacion tipoIdentificacion = getTipoIdentificacionById(id);
 
-        // Validar que no exista otro tipo de identificación con el mismo nombre (excluyendo el actual)
         if (!tipoIdentificacion.getNombre().equals(dto.getNombre()) && 
             tipoIdentificacionRepository.existsByNombre(dto.getNombre())) {
             throw new IllegalArgumentException("Ya existe un tipo de identificación con este nombre");

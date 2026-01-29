@@ -1,15 +1,11 @@
 package com.example.bank.tipoCuenta;
 
-import com.example.bank.estado.Estado;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -36,7 +32,4 @@ public class TipoCuenta {
     @Column(name = "tic_descripcion", nullable = false, length = 100)
     private String descripcion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="tic_estado_id", referencedColumnName="est_id", nullable=false)
-    private Estado estado;
 }

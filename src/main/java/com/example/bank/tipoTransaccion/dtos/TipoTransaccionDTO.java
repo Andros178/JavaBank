@@ -1,4 +1,4 @@
-package com.example.bank.tipoCuenta.dtos;
+package com.example.bank.tipoTransaccion.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TipoCuentaDTO {
+public class TipoTransaccionDTO {
     private Long id;
     private String nombre;
     private String descripcion;

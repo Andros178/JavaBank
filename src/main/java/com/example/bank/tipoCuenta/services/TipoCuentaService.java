@@ -1,7 +1,5 @@
 package com.example.bank.tipoCuenta.services;
 
-import com.example.bank.estado.Estado;
-import com.example.bank.estado.services.EstadoService;
 import com.example.bank.tipoCuenta.TipoCuenta;
 import com.example.bank.tipoCuenta.dtos.TipoCuentaCreateDTO;
 import com.example.bank.tipoCuenta.repositories.TipoCuentaRepository;
@@ -16,9 +14,8 @@ import java.util.List;
 public class TipoCuentaService {
 
     private final TipoCuentaRepository tipoCuentaRepository;
-    private final EstadoService estadoService;
+  
 
-    private static final String ESTADO_DEFAULT = "Activo";
 
     @Transactional
     public TipoCuenta createTipoCuenta(TipoCuentaCreateDTO dto) {
@@ -26,12 +23,11 @@ public class TipoCuentaService {
             throw new IllegalArgumentException("Ya existe un tipo de cuenta con este nombre");
         }
 
-        Estado estado = estadoService.getEstadoByNombre(ESTADO_DEFAULT);
 
         TipoCuenta tipoCuenta = TipoCuenta.builder()
                 .nombre(dto.getNombre())
                 .descripcion(dto.getDescripcion())
-                .estado(estado)
+                
                 .build();
 
         return tipoCuentaRepository.save(tipoCuenta);

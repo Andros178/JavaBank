@@ -1,7 +1,6 @@
 package com.example.bank.tipoIdentificacion.dtos;
 
 
-import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +20,4 @@ public class TipoIdentificacionDTO {
     @NotBlank
     private String descripcion;
 
-    @Nullable
-    private Long estadoId;
 }
