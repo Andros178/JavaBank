@@ -33,8 +33,8 @@ import lombok.NoArgsConstructor;
 @Table(name="cuenta", schema="default")
 public class Cuenta {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cuenta_generato")
-    @SequenceGenerator(name="cuenta_generato", sequenceName= "cuenta_cue_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cuenta_generator")
+    @SequenceGenerator(name="cuenta_generator", sequenceName= "cuenta_cue_id_seq", allocationSize = 1)
     @Column(name="cue_id", nullable=false)
     private Long id;
 
