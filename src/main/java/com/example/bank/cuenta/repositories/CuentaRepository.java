@@ -2,6 +2,8 @@ package com.example.bank.cuenta.repositories;
 
 import com.example.bank.cuenta.Cuenta;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,4 +14,7 @@ public interface CuentaRepository extends JpaRepository<Cuenta, Long> {
     Optional<Cuenta> findByNumeroCuenta(String numeroCuenta);
     boolean existsByNumeroCuenta(String numeroCuenta);
     List<Cuenta> findByClienteId(Long clienteId);
+    
+    @Query("SELECT c FROM Cuenta c WHERE c.numeroCuenta LIKE :prefix% ORDER BY c.numeroCuenta DESC")
+    List<Cuenta> findTopByNumeroCuentaStartingWithOrderByNumeroCuentaDesc(@Param("prefix") String prefix);
 }
