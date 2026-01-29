@@ -26,19 +26,29 @@ public class CuentaService {
     private final EstadoService estadoService;
 
     private static final String ESTADO_DEFAULT = "Activo";
+    private static final String TIPO_CUENTA_AHORROS = "Cuenta de ahorros";
+    private static final String TIPO_CUENTA_CORRIENTE = "Cuenta corriente";
+    private static final String PREFIJO_AHORROS = "53";
+    private static final String PREFIJO_CORRIENTE = "33";
 
     @Transactional
     public Cuenta createCuenta(CuentaCreateDTO dto) {
-        if (cuentaRepository.existsByNumeroCuenta(dto.getNumeroCuenta())) {
-            throw new IllegalArgumentException("Ya existe una cuenta con este número");
-        }
-
         Cliente cliente = clienteService.getClienteById(dto.getClienteId());
         TipoCuenta tipoCuenta = tipoCuentaService.getTipoCuentaById(dto.getTipoCuentaId());
         Estado estado = estadoService.getEstadoByNombre(ESTADO_DEFAULT);
 
+        String numeroCuenta = dto.getNumeroCuenta();
+        if (numeroCuenta == null || numeroCuenta.trim().isEmpty()) {
+            numeroCuenta = generateNumeroCuenta(tipoCuenta);
+        } else {
+            if (cuentaRepository.existsByNumeroCuenta(numeroCuenta)) {
+                throw new IllegalArgumentException("Ya existe una cuenta con este número");
+            }
+            validateNumeroCuentaFormat(numeroCuenta, tipoCuenta);
+        }
+
         Cuenta cuenta = Cuenta.builder()
-                .numeroCuenta(dto.getNumeroCuenta())
+                .numeroCuenta(numeroCuenta)
                 .saldo(dto.getSaldo())
                 .saldoDisponible(dto.getSaldo())
                 .excentaGMF(dto.getExcentaGMF())
@@ -108,7 +118,9 @@ public class CuentaService {
         
         BigDecimal nuevoSaldo = cuenta.getSaldo().add(monto);
         
-        if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
+        String tipoCuentaNombre = cuenta.getTipoCuenta().getNombre();
+        if (TIPO_CUENTA_AHORROS.equalsIgnoreCase(tipoCuentaNombre) && 
+            nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("La cuenta de ahorros no puede tener saldo negativo");
         }
 
@@ -116,5 +128,56 @@ public class CuentaService {
         cuenta.setSaldoDisponible(nuevoSaldo);
         
         return cuentaRepository.save(cuenta);
+    }
+
+    private String generateNumeroCuenta(TipoCuenta tipoCuenta) {
+        String prefijo = getPrefijoByCuentaTipo(tipoCuenta);
+        
+        List<Cuenta> ultimasCuentas = cuentaRepository
+                .findTopByNumeroCuentaStartingWithOrderByNumeroCuentaDesc(prefijo);
+        
+        long ultimoNumero = 0;
+        if (!ultimasCuentas.isEmpty()) {
+            String ultimaCuenta = ultimasCuentas.get(0).getNumeroCuenta();
+            try {
+                ultimoNumero = Long.parseLong(ultimaCuenta);
+            } catch (NumberFormatException e) {
+                ultimoNumero = Long.parseLong(prefijo + "00000000");
+            }
+        } else {
+            ultimoNumero = Long.parseLong(prefijo + "00000000");
+        }
+        
+        long nuevoNumero = ultimoNumero + 1;
+        return String.format("%010d", nuevoNumero);
+    }
+
+    private String getPrefijoByCuentaTipo(TipoCuenta tipoCuenta) {
+        String nombreTipo = tipoCuenta.getNombre();
+        if (TIPO_CUENTA_AHORROS.equalsIgnoreCase(nombreTipo)) {
+            return PREFIJO_AHORROS;
+        } else if (TIPO_CUENTA_CORRIENTE.equalsIgnoreCase(nombreTipo)) {
+            return PREFIJO_CORRIENTE;
+        }
+        throw new IllegalArgumentException("Tipo de cuenta no válido: " + nombreTipo);
+    }
+
+    private void validateNumeroCuentaFormat(String numeroCuenta, TipoCuenta tipoCuenta) {
+        if (numeroCuenta.length() != 10) {
+            throw new IllegalArgumentException("El número de cuenta debe tener exactamente 10 dígitos");
+        }
+        
+        if (!numeroCuenta.matches("\\d{10}")) {
+            throw new IllegalArgumentException("El número de cuenta debe contener solo dígitos");
+        }
+        
+        String prefijo = getPrefijoByCuentaTipo(tipoCuenta);
+        if (!numeroCuenta.startsWith(prefijo)) {
+            String tipoCuentaNombre = tipoCuenta.getNombre();
+            throw new IllegalArgumentException(
+                String.format("El número de cuenta para %s debe empezar con %s", 
+                    tipoCuentaNombre, prefijo)
+            );
+        }
     }
 }

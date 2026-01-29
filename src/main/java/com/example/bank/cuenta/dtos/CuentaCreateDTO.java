@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 @Builder
 public class CuentaCreateDTO {
     
-    @NotBlank(message = "El número de cuenta es obligatorio")
     @Size(max = 10, message = "El número de cuenta no puede exceder 10 caracteres")
     private String numeroCuenta;
     

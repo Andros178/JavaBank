@@ -3,6 +3,7 @@ package com.example.bank.cliente.services;
 import com.example.bank.cliente.Cliente;
 import com.example.bank.cliente.dtos.ClienteCreateDTO;
 import com.example.bank.cliente.repositories.ClienteRepository;
+import com.example.bank.cuenta.repositories.CuentaRepository;
 import com.example.bank.tipoIdentificacion.TipoIdentificacion;
 import com.example.bank.tipoIdentificacion.services.TipoIdentificacionService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final TipoIdentificacionService tipoIdentificacionService;
+    private final CuentaRepository cuentaRepository;
 
     @Transactional
     public Cliente createCliente(ClienteCreateDTO dto) {
@@ -101,6 +103,11 @@ public class ClienteService {
     @Transactional
     public void deleteCliente(Long id) {
         Cliente cliente = getClienteById(id);
+        
+        if (!cuentaRepository.findByClienteId(id).isEmpty()) {
+            throw new IllegalArgumentException("No se puede eliminar un cliente con productos asociados");
+        }
+        
         clienteRepository.delete(cliente);
     }
 
