@@ -1,7 +1,5 @@
-package com.example.bank.tipoIdentificacion.dtos;
+package com.example.bank.tipoCuenta.dtos;
 
-
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,13 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TipoIdentificacionDTO {
+public class TipoCuentaDTO {
     private Long id;
-
-    @NotBlank
     private String nombre;
-
-    @NotBlank
     private String descripcion;
-
 }
